@@ -57,3 +57,5 @@ VALUES ('CC2001','María López','Esp. Gestión de Proyectos',7,'Av. Siempre Viv
 INSERT INTO proyecto (nombre, descripcion, fecha_inicial, fecha_final, presupuesto, horas, docente_id_jefe)
 VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 320,
         (SELECT docente_id FROM docente WHERE numero_documento='CC2001'));
+
+
