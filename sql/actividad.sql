@@ -32,7 +32,7 @@ VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 
         WHERE numero_documento = 'CC3003';
 
 
-SELECT * FROM docente;
+
 
 
 

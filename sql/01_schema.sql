@@ -75,7 +75,7 @@ DROP PROCEDURE IF EXISTS sp_docente_leer;
 DROP PROCEDURE IF EXISTS sp_docente_actualizar;
 DROP PROCEDURE IF EXISTS sp_docente_eliminar;
 
-DELIMITER $$
+DELIMITER $$;
 
 CREATE PROCEDURE sp_docente_crear(
   IN p_numero_documento VARCHAR(20),
@@ -90,8 +90,9 @@ BEGIN
   VALUES (p_numero_documento, p_nombres, p_titulo, IFNULL(p_anios_experiencia,0), p_direccion, p_tipo_docente);
   SELECT LAST_INSERT_ID() AS docente_id_creado;
 END$$
+DELIMITER ;
 
-DELIMITER $$
+DELIMITER $$;
 
 CREATE PROCEDURE sp_docente_leer(IN p_docente_id INT)
 BEGIN
@@ -99,9 +100,9 @@ BEGIN
   FROM docente 
   WHERE docente_id = p_docente_id;
 END$$
+delimiter ;
 
-
-DELIMITER $$
+DELIMITER $$;
 CREATE PROCEDURE sp_docente_actualizar(
   IN p_docente_id       INT,
   IN p_numero_documento VARCHAR(20),
@@ -242,7 +243,7 @@ BEGIN
     (OLD.docente_id, OLD.numero_documento, OLD.nombres, OLD.titulo, OLD.anios_experiencia, OLD.direccion, OLD.tipo_docente);
 END$$
 
-DELIMITER ;
+DELgit log --oneline --author="NombreDeTuCompañero"IMITER ;
 
 -- Índices sugeridos
 CREATE INDEX ix_proyecto_docente ON proyecto(docente_id_jefe);
