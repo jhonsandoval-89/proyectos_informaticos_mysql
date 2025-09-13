@@ -30,7 +30,8 @@ VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 
         UPDATE docente
         SET direccion = 'Cll 100 # 10-10', anios_experiencia = 7
         WHERE numero_documento = 'CC3003';
-        
 
+
+SELECT * FROM proyecto;
 
         
