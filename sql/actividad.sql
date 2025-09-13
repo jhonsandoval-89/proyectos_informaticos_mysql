@@ -31,7 +31,11 @@ VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 
         SET direccion = 'Cll 100 # 10-10', anios_experiencia = 7
         WHERE numero_documento = 'CC3003';
 
+        INSERT INTO docente (numero_documento, nombres, titulo, anios_experiencia, direccion, tipo_docente)
+        VALUES 
+        ('CC4005','Arturo Ramírez','Ing. de Datos',8,'Cra 12 # 53-40','Cátedra');
 
+        SELECT * FROM docente;
 
 
 
