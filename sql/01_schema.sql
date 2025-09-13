@@ -9,6 +9,8 @@ DROP TABLE IF EXISTS copia_actualizados_docente;
 DROP TABLE IF EXISTS proyecto;
 DROP TABLE IF EXISTS docente;
 
+USE proyectos_informaticos
+
 -- Tablas base
 CREATE TABLE docente (
   docente_id        INT AUTO_INCREMENT PRIMARY KEY,
@@ -38,7 +40,7 @@ CREATE TABLE proyecto (
     ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
--- Auditoría
+-- Tablas de auditoría
 CREATE TABLE copia_actualizados_docente (
   auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
   docente_id         INT NOT NULL,
@@ -65,13 +67,16 @@ CREATE TABLE copia_eliminados_docente (
   usuario_sql        VARCHAR(128) NOT NULL DEFAULT (CURRENT_USER())
 ) ENGINE=InnoDB;
 
--- Procedimientos DOCENTE
+-- =========================================
+-- Procedimientos almacenados: DOCENTE (CRUD)
+-- =========================================
 DROP PROCEDURE IF EXISTS sp_docente_crear;
 DROP PROCEDURE IF EXISTS sp_docente_leer;
 DROP PROCEDURE IF EXISTS sp_docente_actualizar;
 DROP PROCEDURE IF EXISTS sp_docente_eliminar;
 
 DELIMITER $$
+
 CREATE PROCEDURE sp_docente_crear(
   IN p_numero_documento VARCHAR(20),
   IN p_nombres          VARCHAR(120),
@@ -86,11 +91,17 @@ BEGIN
   SELECT LAST_INSERT_ID() AS docente_id_creado;
 END$$
 
+DELIMITER $$
+
 CREATE PROCEDURE sp_docente_leer(IN p_docente_id INT)
 BEGIN
-  SELECT * FROM docente WHERE docente_id = p_docente_id;
+  SELECT * 
+  FROM docente 
+  WHERE docente_id = p_docente_id;
 END$$
 
+
+DELIMITER $$
 CREATE PROCEDURE sp_docente_actualizar(
   IN p_docente_id       INT,
   IN p_numero_documento VARCHAR(20),
@@ -109,20 +120,27 @@ BEGIN
          direccion = p_direccion,
          tipo_docente = p_tipo_docente
    WHERE docente_id = p_docente_id;
+
   SELECT * FROM docente WHERE docente_id = p_docente_id;
 END$$
+DELIMITER ;
 
+DELIMITER $$;
 CREATE PROCEDURE sp_docente_eliminar(IN p_docente_id INT)
 BEGIN
   DELETE FROM docente WHERE docente_id = p_docente_id;
 END$$
+DELIMITER ;
 
--- Procedimientos PROYECTO
+-- =========================================
+-- Procedimientos almacenados: PROYECTO (CRUD)
+-- =========================================
 DROP PROCEDURE IF EXISTS sp_proyecto_crear;
 DROP PROCEDURE IF EXISTS sp_proyecto_leer;
 DROP PROCEDURE IF EXISTS sp_proyecto_actualizar;
 DROP PROCEDURE IF EXISTS sp_proyecto_eliminar;
 
+DELIMITER $$;
 CREATE PROCEDURE sp_proyecto_crear(
   IN p_nombre           VARCHAR(120),
   IN p_descripcion      VARCHAR(400),
@@ -137,7 +155,9 @@ BEGIN
   VALUES (p_nombre, p_descripcion, p_fecha_inicial, p_fecha_final, IFNULL(p_presupuesto,0), IFNULL(p_horas,0), p_docente_id_jefe);
   SELECT LAST_INSERT_ID() AS proyecto_id_creado;
 END$$
+DELIMITER ;
 
+DELIMITER $$;
 CREATE PROCEDURE sp_proyecto_leer(IN p_proyecto_id INT)
 BEGIN
   SELECT p.*, d.nombres AS nombre_docente_jefe
@@ -145,7 +165,8 @@ BEGIN
   JOIN docente d ON d.docente_id = p.docente_id_jefe
   WHERE p.proyecto_id = p_proyecto_id;
 END$$
-
+DELIMITER ;
+DELIMITER $$;
 CREATE PROCEDURE sp_proyecto_actualizar(
   IN p_proyecto_id      INT,
   IN p_nombre           VARCHAR(120),
@@ -166,16 +187,22 @@ BEGIN
          horas = IFNULL(p_horas,0),
          docente_id_jefe = p_docente_id_jefe
    WHERE proyecto_id = p_proyecto_id;
+
   CALL sp_proyecto_leer(p_proyecto_id);
 END$$
+DELIMITER ;
 
+DELIMITER $$;
 CREATE PROCEDURE sp_proyecto_eliminar(IN p_proyecto_id INT)
 BEGIN
   DELETE FROM proyecto WHERE proyecto_id = p_proyecto_id;
 END$$
-
--- UDF
+DELIMITER ;
+-- ============================
+-- Función UDF (promedio)
+-- ============================
 DROP FUNCTION IF EXISTS fn_promedio_presupuesto_por_docente;
+DELIMITER $$;
 CREATE FUNCTION fn_promedio_presupuesto_por_docente(p_docente_id INT)
 RETURNS DECIMAL(12,2)
 DETERMINISTIC
@@ -185,10 +212,14 @@ BEGIN
   SELECT IFNULL(AVG(presupuesto),0) INTO v_prom
   FROM proyecto
   WHERE docente_id_jefe = p_docente_id;
+
   RETURN IFNULL(v_prom,0);
 END$$
-
--- Triggers
+DELIMITER ;
+-- ============================
+-- Triggers de auditoría DOCENTE
+-- ============================
+DELIMITER $$;
 CREATE TRIGGER tr_docente_after_update
 AFTER UPDATE ON docente
 FOR EACH ROW
@@ -198,7 +229,9 @@ BEGIN
   VALUES
     (NEW.docente_id, NEW.numero_documento, NEW.nombres, NEW.titulo, NEW.anios_experiencia, NEW.direccion, NEW.tipo_docente);
 END$$
+DELIMITER ;
 
+DELIMITER $$;
 CREATE TRIGGER tr_docente_after_delete
 AFTER DELETE ON docente
 FOR EACH ROW
@@ -211,6 +244,6 @@ END$$
 
 DELIMITER ;
 
--- Índices
+-- Índices sugeridos
 CREATE INDEX ix_proyecto_docente ON proyecto(docente_id_jefe);
 CREATE INDEX ix_docente_documento ON docente(numero_documento);
