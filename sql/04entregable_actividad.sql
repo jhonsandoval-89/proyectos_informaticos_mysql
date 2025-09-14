@@ -96,6 +96,7 @@ DELIMITER ;
 CALL sp_proyecto_crear(
     'Plataforma e-commerce', 'Desarrollo de una plataforma de comercio electrónico 2', '2025-09-01', NULL, 1500000000, 1200, 2
 );
+
 -- Lectura de un proyecto existente
 CALL sp_proyecto_leer(1);
 
