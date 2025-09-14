@@ -40,11 +40,12 @@ VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 
 
         SELECT * FROM proyecto;
 
+ -- Se anexa un nuevo proyecto encargado de interactuar con los clientes de los proyectos.
 INSERT INTO proyecto (nombre, descripcion, fecha_inicial, fecha_final, presupuesto, horas, docente_id_jefe)
 VALUES ('CRM quejas', 'Atención de quejas', '2025-08-01', NULL, 820000000, 700, 1);
 
         
--- Tablas de auditoría
+-- Se crean Tablas de auditoría para consulta de los datos que se eliminen
 CREATE TABLE copia_actualizados_tablaUU (
   auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
   docente_id         INT NOT NULL,
