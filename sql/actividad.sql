@@ -35,7 +35,12 @@ VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 
         VALUES 
         ('CC4005','Arturo Ramírez','Ing. de Datos',8,'Cra 12 # 53-40','Cátedra');
 
-        SELECT * FROM docente;
+        SELECT * FROM proyecto;
+
+INSERT INTO proyecto (nombre, descripcion, fecha_inicial, fecha_final, presupuesto, horas, docente_id_jefe)
+VALUES ('CRM quejas', 'Atención de quejas', '2025-08-01', NULL, 820000000, 700, 1);
+
+        
 
 
 
