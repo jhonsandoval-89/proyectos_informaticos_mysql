@@ -25,10 +25,10 @@ VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 
        ('Análisis Datos','Proyecto de análisis de datos','2025-08-01','2026-02-28',16000000,450,
         (SELECT docente_id FROM docente WHERE numero_documento='CC3007'));
 
-        -- Consultar datos insertados en proyects
+        -- Consultar datos insertados en proyectos
         SELECT * FROM proyecto;
 
-        -- Actulizar datos en la tabla docente
+        -- Actualizar datos en la tabla docente
         UPDATE docente
         SET direccion = 'Cll 100 # 10-10', anios_experiencia = 7
         WHERE numero_documento = 'CC3003';
@@ -71,5 +71,26 @@ CREATE TABLE copia_eliminados_tablaDD (
   accion_fecha       DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()),
   usuario_sql        VARCHAR(128) NOT NULL DEFAULT (CURRENT_USER())
 ) ENGINE=InnoDB;
+
+
+
+DELIMITER $$
+
+CREATE FUNCTION promedio_anios_experiencia_docente(p_docente_id INT)
+RETURNS DECIMAL(12,2)
+DETERMINISTIC
+READS SQL DATA
+BEGIN
+  DECLARE v_prom DECIMAL(12,2);
+
+  SELECT IFNULL(AVG(anios_experiencia), 0)
+  INTO v_prom
+  FROM docente
+  WHERE docente_id = p_docente_id;
+
+  RETURN v_prom;
+END$$
+
+DELIMITER ;
 
         
