@@ -202,3 +202,17 @@ CALL sp_docente_eliminar(8);
 SELECT * FROM proyecto;
 SELECT * FROM docente;
 
+------------------------------------------------------------------------
+
+-- Función para calcular el promedio de los años de experiencia de los docentes
+
+CREATE FUNCTION promedio_anios_experiencia_docentes()
+RETURNS DECIMAL(5,2)
+DETERMINISTIC
+RETURN IFNULL((SELECT AVG(anios_experiencia) FROM docente), 0);
+
+-- Verificar la función
+SELECT promedio_anios_experiencia_docentes();
+
+
+        
