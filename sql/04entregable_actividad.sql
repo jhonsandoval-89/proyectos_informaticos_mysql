@@ -189,7 +189,7 @@ CALL sp_docente_leer(2);
 -- Actualización de un docente existente
 
 CALL sp_docente_actualizar(
-    3, 'CC3010', 'Carlos Pérez', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
+    3, 'CC3010', 'Sergio Rivera', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
 );
 -- Eliminación de un docente existente
 CALL sp_docente_eliminar(8);
@@ -214,5 +214,15 @@ RETURN IFNULL((SELECT AVG(anios_experiencia) FROM docente), 0);
 -- Verificar la función
 SELECT promedio_anios_experiencia_docentes();
 
+-- Trigger para guardar la copia de los datos creados en tablaUU
+DELIMITER $$;
 
-        
+CREATE TRIGGER copia_actualizados_tablaUU
+AFTER UPDATE ON docente
+FOR EACH ROW 
+BEGIN
+ INSERT INTO copia_actualizados_tablaUU ('docente_id', 'numero_documento', 'nombres', 'titulo', 'anios_experiencia', 'direccion', 'tipo_docente')
+ VALUES (NEW.docente_id, NEW.numero_documento, NEW.nombres, NEW.titulo; NEW.anios_experiencia, NEW.direccion, NEW.tipo_docente);
+END$$
+
+DELIMITER ;
