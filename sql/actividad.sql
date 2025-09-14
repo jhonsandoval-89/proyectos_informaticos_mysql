@@ -25,24 +25,30 @@ VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 
        ('Análisis Datos','Proyecto de análisis de datos','2025-08-01','2026-02-28',16000000,450,
         (SELECT docente_id FROM docente WHERE numero_documento='CC3007'));
 
+        -- Consultar datos insertados en proyects
         SELECT * FROM proyecto;
 
+        -- Actulizar datos en la tabla docente
         UPDATE docente
         SET direccion = 'Cll 100 # 10-10', anios_experiencia = 7
         WHERE numero_documento = 'CC3003';
 
+        -- Crear un nuevo docente
         INSERT INTO docente (numero_documento, nombres, titulo, anios_experiencia, direccion, tipo_docente)
         VALUES 
         ('CC4005','Arturo Ramírez','Ing. de Datos',8,'Cra 12 # 53-40','Cátedra');
 
+<<<<<<< HEAD
         SELECT * FROM proyecto;
 
 INSERT INTO proyecto (nombre, descripcion, fecha_inicial, fecha_final, presupuesto, horas, docente_id_jefe)
 VALUES ('CRM quejas', 'Atención de quejas', '2025-08-01', NULL, 820000000, 700, 1);
 
         
-
-
-
+=======
+        -- Consultar datos actualizados en docente y proyecto
+        SELECT * FROM docente;
+        SELECT * FROM proyecto;
+>>>>>>> 2af36e3fccca4a160d6150d1e8116b4663c158b8
 
         
