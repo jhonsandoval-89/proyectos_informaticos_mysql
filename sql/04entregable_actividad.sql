@@ -1,3 +1,7 @@
+-- Limpieza
+DROP TRIGGER IF EXISTS copia_actualizados_tablaUU;
+--DROP TRIGGER IF EXISTS tr_docente_after_delete;
+
 -- Se crean Tablas de auditoría para consulta de los datos que se eliminen
 CREATE TABLE copia_actualizados_tablaUU (
   auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
@@ -14,7 +18,7 @@ CREATE TABLE copia_actualizados_tablaUU (
 
 -- Se crean Tablas de auditoría para consulta de los datos que se eliminen
 CREATE TABLE copia_eliminados_tablaDD (
-  auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
+   auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
   docente_id         INT NOT NULL,
   numero_documento   VARCHAR(20)  NOT NULL,
   nombres            VARCHAR(120) NOT NULL,
@@ -25,6 +29,7 @@ CREATE TABLE copia_eliminados_tablaDD (
   accion_fecha       DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()),
   usuario_sql        VARCHAR(128) NOT NULL DEFAULT (CURRENT_USER())
 ) ENGINE=InnoDB;
+
 
 -- Procedimiento almacenado para crear un nuevo PROYECTO 
 
@@ -181,7 +186,7 @@ DELIMITER ;
 
 -- Inserción de nuevos docentes
 CALL sp_docente_crear(
-    'CC5006', 'Laura Gómez', 'MSc. en IA', 6, 'Cll 45 # 22-10', 'Cátedra'
+    'CC5016', 'Pepito perez', 'Estadistica', 6, 'Cll 45 # 22-20', 'No se nada'
 );
 
 -- Lectura de un docente existente
@@ -190,10 +195,10 @@ CALL sp_docente_leer(2);
 -- Actualización de un docente existente
 
 CALL sp_docente_actualizar(
-    3, 'CC3010', 'Sergio Rivera', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
+    3, 'CC3010', 'Milhouse ', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
 );
 -- Eliminación de un docente existente
-CALL sp_docente_eliminar(8);
+CALL sp_docente_eliminar(9);
 
 
 
@@ -222,8 +227,28 @@ CREATE TRIGGER copia_actualizados_tablaUU
 AFTER UPDATE ON docente
 FOR EACH ROW 
 BEGIN
- INSERT INTO copia_actualizados_tablaUU ('docente_id', 'numero_documento', 'nombres', 'titulo', 'anios_experiencia', 'direccion', 'tipo_docente')
- VALUES (NEW.docente_id, NEW.numero_documento, NEW.nombres, NEW.titulo; NEW.anios_experiencia, NEW.direccion, NEW.tipo_docente);
+    INSERT INTO copia_actualizados_tablaUU (
+        docente_id, 
+        numero_documento, 
+        nombres, 
+        titulo, 
+        anios_experiencia, 
+        direccion, 
+        tipo_docente
+    )
+    VALUES (
+        NEW.docente_id, 
+        NEW.numero_documento, 
+        NEW.nombres, 
+        NEW.titulo, 
+        NEW.anios_experiencia, 
+        NEW.direccion, 
+        NEW.tipo_docente
+    );
 END$$
 
 DELIMITER ;
+
+SELECT * FROM copia_actualizados_tablaUU;
+SELECT * FROM docente;
+

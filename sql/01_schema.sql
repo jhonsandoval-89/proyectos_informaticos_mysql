@@ -51,7 +51,7 @@ CREATE TABLE copia_actualizados_docente (
   direccion          VARCHAR(180),
   tipo_docente       VARCHAR(40),
   accion_fecha       DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()),
-  usuario_sql        VARCHAR(128) NOT NULL DEFAULT (CURRENT_USER())
+  usuaro_sql        VARCHAR(128) NOT NULL DEFAULT (CURRENT_USER())
 ) ENGINE=InnoDB;
 
 CREATE TABLE copia_eliminados_docente (
