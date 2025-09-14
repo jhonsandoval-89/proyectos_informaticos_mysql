@@ -38,17 +38,37 @@ VALUES ('App Biblioteca','App móvil de préstamos','2025-03-01',NULL, 9000000, 
         VALUES 
         ('CC4005','Arturo Ramírez','Ing. de Datos',8,'Cra 12 # 53-40','Cátedra');
 
-<<<<<<< HEAD
         SELECT * FROM proyecto;
 
 INSERT INTO proyecto (nombre, descripcion, fecha_inicial, fecha_final, presupuesto, horas, docente_id_jefe)
 VALUES ('CRM quejas', 'Atención de quejas', '2025-08-01', NULL, 820000000, 700, 1);
 
         
-=======
-        -- Consultar datos actualizados en docente y proyecto
-        SELECT * FROM docente;
-        SELECT * FROM proyecto;
->>>>>>> 2af36e3fccca4a160d6150d1e8116b4663c158b8
+-- Tablas de auditoría
+CREATE TABLE copia_actualizados_tablaUU (
+  auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
+  docente_id         INT NOT NULL,
+  numero_documento   VARCHAR(20)  NOT NULL,
+  nombres            VARCHAR(120) NOT NULL,
+  titulo             VARCHAR(120),
+  anios_experiencia  INT          NOT NULL,
+  direccion          VARCHAR(180),
+  tipo_docente       VARCHAR(40),
+  accion_fecha       DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()),
+  usuario_sql        VARCHAR(128) NOT NULL DEFAULT (CURRENT_USER())
+) ENGINE=InnoDB;
+
+CREATE TABLE copia_eliminados_tablaDD (
+  auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
+  docente_id         INT NOT NULL,
+  numero_documento   VARCHAR(20)  NOT NULL,
+  nombres            VARCHAR(120) NOT NULL,
+  titulo             VARCHAR(120),
+  anios_experiencia  INT          NOT NULL,
+  direccion          VARCHAR(180),
+  tipo_docente       VARCHAR(40),
+  accion_fecha       DATETIME     NOT NULL DEFAULT (UTC_TIMESTAMP()),
+  usuario_sql        VARCHAR(128) NOT NULL DEFAULT (CURRENT_USER())
+) ENGINE=InnoDB;
 
         
