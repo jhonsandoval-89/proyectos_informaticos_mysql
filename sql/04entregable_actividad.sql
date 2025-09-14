@@ -249,6 +249,7 @@ END$$
 
 DELIMITER ;
 
+
 SELECT * FROM copia_actualizados_tablaUU;
 SELECT * FROM docente;
 
