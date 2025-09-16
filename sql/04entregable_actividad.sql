@@ -1,3 +1,5 @@
+USE proyectos_informaticos
+
 -- Limpieza
 DROP TRIGGER IF EXISTS copia_actualizados_tablaUU;
 --DROP TRIGGER IF EXISTS tr_docente_after_delete;
@@ -195,7 +197,7 @@ CALL sp_docente_leer(2);
 -- Actualización de un docente existente
 
 CALL sp_docente_actualizar(
-    3, 'CC3010', 'Milhouse ', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
+    3, 'CC3010', 'Jhon Sandoval Barreto', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
 );
 -- Eliminación de un docente existente
 CALL sp_docente_eliminar(9);
@@ -221,8 +223,7 @@ RETURN IFNULL((SELECT AVG(anios_experiencia) FROM docente), 0);
 SELECT promedio_anios_experiencia_docentes();
 
 -- Trigger para guardar la copia de los datos creados en tablaUU
-DELIMITER $$;
-
+DELIMITER $$
 CREATE TRIGGER copia_actualizados_tablaUU
 AFTER UPDATE ON docente
 FOR EACH ROW 
@@ -246,10 +247,11 @@ BEGIN
         NEW.tipo_docente
     );
 END$$
-
 DELIMITER ;
 
 
 SELECT * FROM copia_actualizados_tablaUU;
+SELECT * FROM copia_eliminados_tablaDD; 
 SELECT * FROM docente;
+SELECT * FROM proyecto;
 
