@@ -2,7 +2,9 @@ USE proyectos_informaticos
 
 -- Limpieza
 DROP TRIGGER IF EXISTS copia_actualizados_tablaUU;
+DROP TRIGGER IF EXISTS copia_eliminados_tablaDD;
 --DROP TRIGGER IF EXISTS tr_docente_after_delete;
+
 
 -- Se crean Tablas de auditoría para consulta de los datos que se eliminen
 CREATE TABLE copia_actualizados_tablaUU (
@@ -188,7 +190,7 @@ DELIMITER ;
 
 -- Inserción de nuevos docentes
 CALL sp_docente_crear(
-    'CC5016', 'Pepito perez', 'Estadistica', 6, 'Cll 45 # 22-20', 'No se nada'
+    'CC5030', 'Camilo', 'Ingles', 6, 'av siempreviva 462', 'catedra'
 );
 
 -- Lectura de un docente existente
@@ -197,10 +199,10 @@ CALL sp_docente_leer(2);
 -- Actualización de un docente existente
 
 CALL sp_docente_actualizar(
-    3, 'CC3010', 'Jhon Sandoval Barreto', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
+    3, 'CC3010', 'Juan castro', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
 );
 -- Eliminación de un docente existente
-CALL sp_docente_eliminar(9);
+CALL sp_docente_eliminar(12);
 
 
 
@@ -249,9 +251,38 @@ BEGIN
 END$$
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER copia_eliminados_tablaDD
+AFTER DELETE ON docente
+FOR EACH ROW 
+BEGIN
+    INSERT INTO copia_eliminados_tablaDD (
+        docente_id, 
+        numero_documento, 
+        nombres, 
+        titulo, 
+        anios_experiencia, 
+        direccion, 
+        tipo_docente
+    )
+    VALUES (
+        OLD.docente_id, 
+        OLD.numero_documento, 
+        OLD.nombres, 
+        OLD.titulo, 
+        OLD.anios_experiencia, 
+        OLD.direccion, 
+        OLD.tipo_docente
+    );
+END$$
+DELIMITER ;
+
 
 SELECT * FROM copia_actualizados_tablaUU;
 SELECT * FROM copia_eliminados_tablaDD; 
 SELECT * FROM docente;
 SELECT * FROM proyecto;
+
+
+
 
