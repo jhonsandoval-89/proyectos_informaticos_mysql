@@ -1,12 +1,11 @@
 USE proyectos_informaticos
 
--- Limpieza
+-- Limpiar triggers si existen para poder crear nuevos
 DROP TRIGGER IF EXISTS copia_actualizados_tablaUU;
 DROP TRIGGER IF EXISTS copia_eliminados_tablaDD;
---DROP TRIGGER IF EXISTS tr_docente_after_delete;
 
 
--- Se crean Tablas de auditoría para consulta de los datos que se eliminen
+-- Se crean Tabla copia_actualizados_tablaUU para consulta de los datos que se acualicen en la tabla docente
 CREATE TABLE copia_actualizados_tablaUU (
   auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
   docente_id         INT NOT NULL,
@@ -20,7 +19,7 @@ CREATE TABLE copia_actualizados_tablaUU (
   usuario_sql        VARCHAR(128) NOT NULL DEFAULT (CURRENT_USER())
 ) ENGINE=InnoDB;
 
--- Se crean Tablas de auditoría para consulta de los datos que se eliminen
+-- Se crean Tablas copia_eliminados_tablaDD para consulta de los datos que se eliminen en la tabla docente
 CREATE TABLE copia_eliminados_tablaDD (
    auditoria_id       INT AUTO_INCREMENT PRIMARY KEY,
   docente_id         INT NOT NULL,
@@ -35,7 +34,8 @@ CREATE TABLE copia_eliminados_tablaDD (
 ) ENGINE=InnoDB;
 
 
--- Procedimiento almacenado para crear un nuevo PROYECTO 
+-- Se crea un procedimiento almacenado para crear un nuevo PROYECTO en la tabla proyecto 
+-- P_nombre, p_descripcion, p_fecha_inicial, p_fecha_final, p_presupuesto, p_horas, p_docente_id_jefe son los parámetros de entrada
 
 DELIMITER $$
 
@@ -57,7 +57,7 @@ BEGIN
   );
 END$$
 
--- Procedimiento almacenado para leer un proyecto existente
+-- Se crea un procedimiento almacenado para leer un nuevo PROYECTO en la tabla proyecto 
 DELIMITER ;
 CREATE PROCEDURE sp_proyecto_leer(
     IN p_proyecto_id INT
@@ -66,7 +66,7 @@ CREATE PROCEDURE sp_proyecto_leer(
 END$$       
 DELIMITER ;
 
---- Procedimiento almacenado para actualizar un proyecto existente
+--- Se crea un procedimiento almacenado para actualizar un PROYECTO en la tabla proyecto 
 DELIMITER $$;
 CREATE PROCEDURE sp_proyecto_actualizar(
   IN p_proyecto_id     INT,
@@ -92,7 +92,7 @@ CREATE PROCEDURE sp_proyecto_actualizar(
 END$$
 DELIMITER ;
 
---- Procedimiento almacenado para eliminar un proyecto existente
+--- Se crea un procedimiento almacenado para eliminar un PROYECTO en la tabla proyecto
 DELIMITER $$;
 CREATE PROCEDURE sp_proyecto_eliminar(
     IN p_proyecto_id INT
@@ -101,25 +101,25 @@ CREATE PROCEDURE sp_proyecto_eliminar(
 END$$
 DELIMITER ;
 
--- Inserción de nuevos proyectos
+-- Se llama la funcion con CALL para insertar datos nuevos en la tabla proyectos
 CALL sp_proyecto_crear(
     'Plataforma e-commerce', 'Desarrollo de una plataforma de comercio electrónico 2', '2025-09-01', NULL, 1500000000, 1200, 2
 );
 
--- Lectura de un proyecto existente
+-- Se llama la funcion con CALL para leer datos de la tabla proyectos
 CALL sp_proyecto_leer(1);
 
--- Actualización de un proyecto existente
+-- Se llama la funcion con CALL para actualizar datos de la tabla proyectos
 CALL sp_proyecto_actualizar(
     2, 'App móvil de salud', 'Aplicación para monitoreo de salud 2', '2025-07-15', NULL, 600000000, 500, 3
 );
 
--- Eliminación de un proyecto existente
+-- Se llama la funcion con CALL para eliminar datos de la tabla proyectos
 CALL sp_proyecto_eliminar(3);
 
 ------------------------------------------------------------------------
 
--- Procedimiento almacenado para crear un nuevo docente
+-- Se crea función de Procedimiento almacenado para crear un nuevo docente
 
 DELIMITER $$
 
@@ -142,7 +142,7 @@ END$$
 
 DELIMITER ;
 
--- Procedimiento almacenado para leer un docente existente
+-- Se crea función de Procedimiento almacenado para leer un docente existente
 DELIMITER $$;
 CREATE PROCEDURE sp_docente_leer(
     IN d_docente_id INT
@@ -153,7 +153,7 @@ END$$
 DELIMITER ;
 
 
---- Procedimiento almacenado para actualizar un docente existente
+-- Se crea función de Procedimiento almacenado para actualizar un docente existente
 DELIMITER $$;
 CREATE PROCEDURE sp_docente_actualizar(
   IN d_docente_id       INT,
@@ -178,7 +178,7 @@ BEGIN
 END$$
 DELIMITER ;
 
---- Procedimiento almacenado para eliminar un docente existente
+-- Se crea función de Procedimiento almacenado para eliminar un docente existente
 DELIMITER $$;
 CREATE PROCEDURE sp_docente_eliminar(
     IN d_docente_id INT
@@ -188,26 +188,26 @@ BEGIN
 END$$
 DELIMITER ;
 
--- Inserción de nuevos docentes
+--Se llama la función CALL para Insertar nuevos docentes
 CALL sp_docente_crear(
     'CC5030', 'Camilo', 'Ingles', 6, 'av siempreviva 462', 'catedra'
 );
 
--- Lectura de un docente existente
+--Se llama la función CALL para leer un docente existente
 CALL sp_docente_leer(2);
 
--- Actualización de un docente existente
+--Se llama la función CALL para actualizar un docente existente
 
 CALL sp_docente_actualizar(
     3, 'CC3010', 'Juan castro', 'Ing. de Sistemas', 8, 'Cll 100 # 10-10', 'Cátedra'
 );
--- Eliminación de un docente existente
+--Se llama la función CALL para eliminar un docente existente
 CALL sp_docente_eliminar(12);
 
 
 
 
--- Verificar la inserción o lectura de los datos
+-- Usamos select para ver que datos tienen las tablas
 
 SELECT * FROM proyecto;
 SELECT * FROM docente;
@@ -221,10 +221,10 @@ RETURNS DECIMAL(5,2)
 DETERMINISTIC
 RETURN IFNULL((SELECT AVG(anios_experiencia) FROM docente), 0);
 
--- Verificar la función
+-- Seleccionamos la tabla para verificar función del promedio de años de experiencia
 SELECT promedio_anios_experiencia_docentes();
 
--- Trigger para guardar la copia de los datos creados en tablaUU
+-- Se crea Trigger para guardar una copia de los datos actualizados en la tabla docente en la tabla copia_actualizados_tablaUU
 DELIMITER $$
 CREATE TRIGGER copia_actualizados_tablaUU
 AFTER UPDATE ON docente
@@ -251,6 +251,7 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- Se crea Trigger para guardar una copia de los datos eliminados en la tabla docente en la tabla copia_eliminados_tablaDD
 DELIMITER $$
 CREATE TRIGGER copia_eliminados_tablaDD
 AFTER DELETE ON docente
@@ -277,9 +278,16 @@ BEGIN
 END$$
 DELIMITER ;
 
-
+--- Actualizamos un docente para verificar que el trigger de actualización funciona
+CALL sp_docente_actualizar(
+    2, 'CC5030', 'Camilo Andres', 'Ingles avanzado', 7, 'av siempreviva 462 apto 101', 'catedra'
+);
+--- Eliminamos un docente para verificar que el trigger de eliminación funciona
+CALL sp_docente_eliminar(3);
+-- Seleccionamos las tablas de auditoría para verificar que los triggers funcionan correctamente
 SELECT * FROM copia_actualizados_tablaUU;
 SELECT * FROM copia_eliminados_tablaDD; 
+-- Seleccionamos las tablas principales para verificar que los datos se actualizaron y eliminaron correctamente
 SELECT * FROM docente;
 SELECT * FROM proyecto;
 
